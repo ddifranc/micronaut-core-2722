@@ -78,4 +78,21 @@ public class UploadByteBufferTest {
 
     }
 
+    //passes
+    @Test
+    public void testPutByteBuffers_NoContentType() throws Exception {
+        URL baseURL = new URL("http://httpbin.org");
+        RxStreamingHttpClient rxclient = RxStreamingHttpClient.create(baseURL);
+
+        String body = "body";
+        Flowable<ByteBuffer<ByteBuf>> bufs = Flowable.just(
+                NettyByteBufferFactory.DEFAULT.wrap(body.getBytes()));
+
+        MutableHttpRequest<?> request = HttpRequest.PUT("/put", bufs);
+
+        HttpResponse<String> result = rxclient.exchange(request, String.class).blockingSingle();
+        System.out.println(result.body());
+
+    }
+
 }
